@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://192.171.1.59/api/v1/user/login" xml:lang="en">
+
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+    $.ajax({
+        type: "post",
+        url:"http://192.171.1.59/api/v1/user/login",
+        data: {"password": "Cert@123","user_name":"admin"},
+        success: function(result){
+            console.log(result)
+        }
+    })
+    </script>
