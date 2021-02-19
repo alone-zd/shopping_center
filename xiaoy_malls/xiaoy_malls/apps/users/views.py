@@ -4,13 +4,22 @@ from django import http
 import re
 from django.db import DatabaseError
 from django.urls import reverse
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
-from django.contrib.auth import authenticate
 
 from users.models import User
 from xiaoy_malls.utils.response_code import RETCODE
 # Create your views here.
+
+
+class LogoutView(View):
+
+    def get(self, request):
+        """用户推出登陆"""
+        logout(request)
+        response = redirect(reverse('contents:index'))
+        response.delete_cookie('username')
+        return response
 
 
 class LoginView(View):
