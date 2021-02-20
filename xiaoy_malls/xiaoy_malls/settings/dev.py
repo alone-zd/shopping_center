@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'users',  # 用户模块
     'contents',  # 首页模块  
     'verifications',  # 验证模块
+    'areas', #省市区三级联动
 ]   
 
 MIDDLEWARE = [
