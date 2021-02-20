@@ -61,7 +61,7 @@ let vm = new Vue({
                         } else if (response.data.code == '4101') {
                             location.href = '/login/?next=/info/';
                         } else {
-                            console.log(response);
+                            alert(response.data.errmsg);
                         }
                     })
                     .catch(error => {
