@@ -3,8 +3,8 @@ from django.conf import settings
 from celery_tasks.main import celery_app
 
 
-@celery_app.task(name='send_verify_email')
-def send_verify_email(to_email, verify_url):
+@celery_app.task(bind=True, name='send_verify_email', retry_backoff=3)
+def send_verify_email(self, to_email, verify_url):
     """
     发送验证邮箱邮件
     :param to_email: 收件人邮箱
@@ -16,4 +16,9 @@ def send_verify_email(to_email, verify_url):
                    '<p>感谢您使用xiaoy商城。</p>' \
                    '<p>您的邮箱为：%s 。请点击此链接激活您的邮箱：</p>' \
                    '<p><a href="%s">%s<a></p>' % (to_email, verify_url, verify_url)
-    send_mail(subject, "", settings.EMAIL_FROM, [to_email], html_message=html_message)
+    try:
+        send_mail(subject, "", settings.EMAIL_FROM, [to_email], html_message=html_message)
+    except Exception as e:
+        logger.error(e)
+        # 有异常自动重联三次
+        raise self.retry(exc=e, max_retries=3)
