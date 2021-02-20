@@ -11,10 +11,34 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import User
 from xiaoy_malls.utils.response_code import RETCODE
 from xiaoy_malls.utils.views import LoginRequiredJSONMixin
+from celery_tasks.email.tasks import send_verify_email
+from users.utils import generate_verify_email_url, check_verify_email_token
 # Create your views here.
 
 
 logger = logging.getLogger('django')
+
+
+class VerifyEmailView(View):
+    """验证"""
+    
+    def get(self, request):
+        token = request.GET.get('token')
+        if not token:
+            return http.HttpResponseForbidden('缺少token')
+        user = check_verify_email_token(token)
+        if not user:
+            return http.HttpResponseBadRequest('无效token')
+        try:
+            user.email_active = True
+            user.save()
+        except Exception as e:
+            logger.error(e)
+            return http.HttpResponseServerError('激活邮箱失败')
+        
+        return redirect(reverse('users:info'))
+
+
 
 class EmailView(LoginRequiredJSONMixin, View):
     """添加邮箱"""
@@ -28,11 +52,15 @@ class EmailView(LoginRequiredJSONMixin, View):
             return http.HttpResponseForbidden('参数email有误')
         # 给当前登陆用户绑定email字段
         try:
-            request.user.email = 'email'
+            request.user.email = email
             request.user.save()
         except Exception as e:
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '添加邮箱失败'})
+        # 发送邮箱验证邮件
+        verify_url = generate_verify_email_url(request.user)
+        print(verify_url)
+        send_verify_email.delay(email, verify_url)
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
 
 

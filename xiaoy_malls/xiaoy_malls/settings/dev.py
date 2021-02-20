@@ -255,3 +255,15 @@ AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileBackend']
 
 # 判断用户是否登陆后，指定未登陆用户重定向的地址
 LOGIN_URL = '/login/'
+
+# 邮件参数
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIl_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'alone_3@163.com'
+EMAIl_HOST_PASSWORD = 'ZYOVHEHBEHIPWBZW'
+EMAIL_FROM = 'alone_3<alone_3@163.com>'
+EMIAL_USE_TLS = False
+
+# 邮箱验证链接
+EMAIL_VERIFY_URL = 'http://127.0.0.1:8000/emails/verification/'
