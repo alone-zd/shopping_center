@@ -52,7 +52,7 @@ class DefaultAddressView(LoginRequiredJSONMixin, View):
         except Exception as e:
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '设置默认地址失败'})
-            
+
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '设置默认地址成功'})
 
 class UpdateDestroyAddressView(LoginRequiredJSONMixin, View):
@@ -285,7 +285,7 @@ class EmailView(LoginRequiredJSONMixin, View):
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '添加邮箱失败'})
         # 发送邮箱验证邮件
         verify_url = generate_verify_email_url(request.user)
-        print(verify_url)
+        print(email, verify_url)
         send_verify_email.delay(email, verify_url)
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
 

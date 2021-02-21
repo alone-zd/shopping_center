@@ -1,35 +1,39 @@
+import smtplib
 from email.mime.text import MIMEText
-from email.header import Header
-from smtplib import SMTP_SSL
+#设置服务器所需信息
+#163邮箱服务器地址
+mail_host = 'smtp.163.com'  
+#163用户名
+mail_user = 'alone_3@163.com'  
+#密码(部分邮箱为授权码) 
+mail_pass = 'ZYOVHEHBEHIPWBZW'   
+#邮件发送方邮箱地址
+sender = 'alone_3<alone_3@163.com>'  
+#邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
+receivers = ['1281141257@qq.com']  
 
+#设置email信息
+#邮件内容设置
+message = MIMEText('content','plain','utf-8')
+#邮件主题       
+message['Subject'] = 'title' 
+#发送方信息
+message['From'] = sender 
+#接受方信息     
+message['To'] = receivers[0]  
 
-#qq邮箱smtp服务器
-host_server = 'smtp.163.com'
-#sender_qq为发件人的qq号码
-sender_qq = 'alone_3@163.com'
-#pwd为qq邮箱的授权码
-pwd = 'ZYOVHEHBEHIPWBZW' ## h**********bdc
-#发件人的邮箱
-sender_qq_mail = 'alone_3@163.com'
-#收件人邮箱
-receivers = ['1281141257@qq.com']
-
-#邮件的正文内容
-mail_content = '你好，这是使用python登录qq邮箱发邮件的测试'
-#邮件标题
-mail_title = 'Maxsu的邮件'
-
-
-#ssl登录
-smtp = SMTP_SSL(host_server)
-#set_debuglevel()是用来调试的。参数值为1表示开启调试模式，参数值为0关闭调试模式
-smtp.set_debuglevel(1)
-smtp.ehlo(host_server)
-smtp.login(sender_qq, pwd)
-
-msg = MIMEText(mail_content, "plain", 'utf-8')
-msg["Subject"] = Header(mail_title, 'utf-8')
-msg["From"] = sender_qq_mail
-msg["To"] = Header("接收者测试", 'utf-8') ## 接收者的别名
-smtp.sendmail(sender_qq_mail, receivers, msg.as_string())
-smtp.quit()
+#登录并发送邮件
+try:
+    smtpObj = smtplib.SMTP() 
+    #连接到服务器
+    smtpObj.connect(mail_host,25)
+    #登录到服务器
+    smtpObj.login(mail_user,mail_pass) 
+    #发送
+    smtpObj.sendmail(
+        sender,receivers,message.as_string()) 
+    #退出
+    smtpObj.quit() 
+    print('success')
+except smtplib.SMTPException as e:
+    print('error',e) #打印错误

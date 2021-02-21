@@ -1,6 +1,9 @@
 from django.core.mail import send_mail
 from django.conf import settings
 from celery_tasks.main import celery_app
+import logging
+
+logger = logging.getLogger()
 
 
 @celery_app.task(bind=True, name='send_verify_email', retry_backoff=3)
